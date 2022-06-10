@@ -5,22 +5,31 @@ from regex import A
 import requests
 import multiprocessing
 from typing import Optional
+import pprint
 
 from bs4 import BeautifulSoup
 
 WEB_URL = 'https://papers.gceguide.com/A%20Levels/'
 
-AVAILABLE_SUBJECTS = []
+AVAILABLE_SUBJECTS, SUBJECT_URL = [], []
 SUBJECT_CODES = []
 paper = ''
 
 def subjects(WEB_URL):
+    
     r = requests.get(WEB_URL)
     soup = BeautifulSoup(r.text, 'lxml')
     subject_name= soup.find_all('li', class_ = 'dir')
     for subject in subject_name:
-        AVAILABLE_SUBJECTS.append(
-            [subject.text, subject.a.get('href').replace(' ', '%20')])    
+        AVAILABLE_SUBJECTS.append(subject.text)
+        SUBJECT_CODES.append(subject.text.split(' ')[-1].replace('(','').replace(')','')) 
+        SUBJECT_URL.append(subject.a.get('href').replace(' ', '%20'))
+    
+        
+    subject_dict = zip(SUBJECT_CODES, SUBJECT_URL)
+    pprint.pprint(dict(subject_dict))
+    
+    # return dict(subject_dict)
     #print(AVAILABLE_SUBJECTS)   
 
 def find_paper(subject_code:int, Year:int, PaperVariant: int or None = None,  exam_session= ['s','w','m'], Type= ['sp','ms','qp','er','ir','gt']): 
@@ -30,9 +39,9 @@ def find_paper(subject_code:int, Year:int, PaperVariant: int or None = None,  ex
     Type: Type | MS, QP, ER, GT
     '''
     get_all_subject_codes()
+    subjects_ = subjects(WEB_URL)
     if subject_code in SUBJECT_CODES:
         try:
-
             if not Type == 'gt' or not Type == 'er':
                 # FORMAT OF PAPER: /2022/9709_m22_ms_12.pdf
                 year_code = ''.join(list(str(Year))[:2])
@@ -42,9 +51,11 @@ def find_paper(subject_code:int, Year:int, PaperVariant: int or None = None,  ex
             print(paper)
         except Exception as e:
             print(e)
+        # paper_url = f'{WEB_URL}/{subjects_[]}'
         return paper 
+
 def get_paper():
-    
+
     pass
 
 
@@ -54,5 +65,6 @@ def get_all_subject_codes():
     for subject_code in AVAILABLE_SUBJECTS:
         SUBJECT_CODES.append(int(subject_code[0].split(' ')[-1].replace('(','').replace(')','')))
     print(SUBJECT_CODES.sort())    
-
-find_paper(subject_code = 9702, Year= 2021,exam_session= 'm', Type ='gt')
+    
+# find_paper(subject_code = 9702, Year= 2021,exam_session= 'm', Type ='gt')
+subjects(WEB_URL)
