@@ -1,37 +1,94 @@
 import dearpygui.dearpygui as dpg
+import os
+import ctypes
+import webbrowser
+import random
 
-WIDTH = 600
-HEIGHT = 500
+os.chdir(os.getcwd())
 
 dpg.create_context()
+WIDTH, HEIGHT = 1920, 1080
+cur_dir = os.getcwd()
+
+os.chdir('D:/All the coding stuff/Mangadex')
+
+width, height, channels, data = dpg.load_image('images/manga_neko.png')
+
+with dpg.texture_registry():
+    dpg.add_static_texture(width, height, data, tag="image_id")
 
 
-def print_me(sender, app_data, user_data):
-    print(user_data)
+      
 
 
-with dpg.window(tag='main', label='Hello'):
-    with dpg.viewport_menu_bar(tag='menu') as viewport_menu:
-        with dpg.menu(label='File') as file_tab:
-            dpg.add_menu_item(label='Open', callback=lambda: dpg.show_item('open_file'))
-            dpg.add_menu_item(label='Save', callback=print_me, user_data='Save')
-            dpg.add_menu_item(label='Save As', callback=print_me, user_data='Save As')
-            with dpg.menu(label='Settings') as settings_tab:
-                dpg.add_menu_item(label='Settings 1', callback=print_me, user_data='Settings 1')
-                dpg.add_menu_item(label='Settings 2', callback=print_me, user_data='Settings 2')
-        dpg.add_menu_item(label='Help', callback=print_me, user_data='Help')
-        with dpg.menu(label='Edit'):
-            dpg.add_checkbox(label='Copy', callback=print_me, user_data='Copy')
-            dpg.add_button(label='Cut', callback=print_me, user_data='Cut')
-            dpg.add_checkbox(label='Paste', callback=print_me, user_data='Paste')
-    with dpg.child_window():
-        dpg.add_text('Hello World')
-        dpg.add_text(tag='file_content', show=True, label='Content')
+'''
+About Page
+'''
+with dpg.window(label="About", width=300, height=250,pos=[WIDTH // 2 -300//2, HEIGHT // 2- 250//2],modal=True, show=False, id="about_id", no_title_bar=True):
+    dpg.add_text("PyMangaDex",pos=[100,0],color=(200, 142, 255))
+    dpg.add_spacer(height=6)
+    dpg.add_text("Made with love by Beebek", pos=[35,20])
+    dpg.add_spacer(height=10)
+    dpg.add_text('Version: 0.0.1') 
+    dpg.add_spacer(height=2)
+    with dpg.drawlist(width=-1, height=-1):
+        dpg.draw_image("image_id", (20, 40), (80, 120), uv_min=(0, 0), uv_max=(1, 1))
+      
+    with dpg.group(horizontal=True):
+        dpg.add_button(label="OK", width=75, callback=lambda: dpg.configure_item("about_id", show=False))
+        dpg.add_button(label="Cancel", width=75, callback=lambda: dpg.configure_item("about_id", show=False))
 
+'''
+Main Window
+'''
+with dpg.window(tag='main window',no_resize=True,no_move=True,no_background=True):
+  '''
+  Menu Bar
+  '''
+  with dpg.menu_bar():
+    with dpg.menu(label="File"):
+      dpg.add_menu_item(label="Import Manga")
 
-dpg.create_viewport(title='Notepad', width=WIDTH, height=HEIGHT)
-dpg.set_primary_window('main', True)
+    with dpg.menu(label='Tools'):
+      dpg.add_menu_item(label='Settings')
+      dpg.add_menu_item(label='Help')
+      dpg.add_menu_item(label='About', callback=lambda: dpg.configure_item("about_id", show=True))
+      dpg.add_menu_item(label='Logger', callback=lambda: dpg.show_metrics())
+      dpg.add_menu_item(label='Exit')
+      dpg.add_menu_item(label='Style Editor', callback=lambda: dpg.show_style_editor())
+      dpg.add_menu_item(label='Save Init file', callback=lambda: dpg.save_init_file('dpg.ini'))
+  
+  '''
+  Search Box
+  '''
+  with dpg.group(label='Search_Box',horizontal=True):
+    
+    with dpg.child_window(width=220, height=40,no_scrollbar=True,border=False,tag="sidebar"):
+      with dpg.group(horizontal=False,tag="query"):
+        dpg.add_input_text(hint="Search for a Paper",width=-1, on_enter=True)
+    
+    with dpg.child_window(tag='main_child_window',autosize_x=False,autosize_y=True,border=False):
+      with dpg.child_window(autosize_x=False,autosize_y=True,delay_search=True):
+        pass
+        
+
+dpg.create_viewport(title='Custom Title', width=800, height=600)
+  
+with dpg.font_registry():
+  mono_lisa =dpg.add_font('fonts\MonoLisa\MonoLisa-Bold.ttf', 20)
+
+dpg.bind_font(mono_lisa)
+
+while dpg.is_dearpygui_running():
+    jobs = dpg.get_callback_queue() # retrieves and clears queue
+    dpg.run_callbacks(jobs)
+    dpg.render_dearpygui_frame()
+
+dpg.create_viewport(title='PyMangaDex', width=WIDTH, height=HEIGHT)
 dpg.setup_dearpygui()
+dpg.maximize_viewport()
+dpg.set_primary_window('main window', True)
+ctypes.windll.shcore.SetProcessDpiAwareness(2)
 dpg.show_viewport()
 dpg.start_dearpygui()
 dpg.destroy_context()
