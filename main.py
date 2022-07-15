@@ -1,29 +1,18 @@
-import argparse
-import logging
+import dearpygui.dearpygui as dpg
 
-import spotipy
-from spotipy.oauth2 import SpotifyOAuth
+dpg.create_context()
 
-logger = logging.getLogger('examples.add_tracks_to_playlist')
-logging.basicConfig(level='DEBUG')
-scope = 'playlist-modify-public'
+def callback(sender, app_data):
+    print("Sender: ", sender)
+    print("App Data: ", app_data)
 
+dpg.add_file_dialog(directory_selector=True, show=False, callback=callback, tag="file_dialog_id")
 
-def get_args():
-    parser = argparse.ArgumentParser(description='Adds track to user playlist')
-    parser.add_argument('-t', '--tids', action='append',
-                        required=True, help='Track ids')
-    parser.add_argument('-p', '--playlist', required=True,
-                        help='Playlist to add track to')
-    return parser.parse_args()
+with dpg.window(label="Tutorial", width=800, height=300):
+    dpg.add_button(label="Directory Selector", callback=lambda: dpg.show_item("file_dialog_id"))
 
-
-def main():
-    args = get_args()
-
-    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
-    sp.playlist_add_items(args.playlist, args.tids)
-
-
-if __name__ == '__main__':
-    main()
+dpg.create_viewport(title='Custom Title', width=800, height=600)
+dpg.setup_dearpygui()
+dpg.show_viewport()
+dpg.start_dearpygui()
+dpg.destroy_context()

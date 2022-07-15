@@ -1,41 +1,39 @@
-from gce_scraper import *
-import fitz
-from typing import Tuple
+import sys, fitz  
 import os
-import requests
-import glob, sys, fitz
 
+fname = '9706_s20_ms_12.pdf'  
 
-# print(find_paper(9702, 2020, PaperVariant=12, exam_session= 's', Type= 'qp'))
-url, name = find_paper(9702, 2020, PaperVariant=12, exam_session= 's', Type= 'qp')
+base_img_dir = "renderer\paper_cache\images/"
+base_pdf_dir = "renderer\paper_cache\pdf/"
 
-def downloader(PDF_NAME=name.split('/')[2], PDF_LINK=url):
-    try:
-        with open(PDF_NAME, 'r') as pdf:
-            print('File is already there')
-            return 1
-    except Exception:
-        print('New PDF')
-        with open(PDF_NAME, 'wb') as pdf:
-            r = requests.get(PDF_LINK)
-            pdf.write(r.content)
-            print('Downloaded')
-            return 0
-    except Exception:
-        print('Cannot download the PDF {}'.format(PDF_NAME))
-downloader()
+'''
+We give like file_name: 9706_s20_ms_12
+Thing I am trying to do is make dir: 9706_s20_ms_12
+and save pictures of individual pages in that dir
+which will be accessed when the user asks for it.
 
+Also note to self: I'll prolly add some intelligent way to pdf manage 
+'''
 
-# To get better resolution
-zoom_x = 2.0  # horizontal zoom
-zoom_y = 2.0  # vertical zoom
-mat = fitz.Matrix(zoom_x, zoom_y)  # zoom factor 2 in each dimension
+def convert_to_png(file_name):    
+    
+    raw_name = file_name.split('.')[0]
+    pdf_dir = f'{base_pdf_dir}{file_name}'
+    img_dir = f'{base_img_dir}{raw_name}/'
 
-path = '../data/in/'
-all_files = glob.glob(path + "*.pdf")
+    if not os.path.exists(img_dir):
+        print(f"Dir not found {raw_name}...")
+        print(f'making dir {raw_name} ...')
+        os.mkdir(img_dir)
 
-for filename in all_files:
-    doc = fitz.open(filename)  # open document
-    for page in doc:  # iterate through the pages
-        pix = page.get_pixmap(matrix=mat)  # render page to an image
-        pix.save("../data/out/page-%i.png" % page.number)  # store image as a PNG
+    else:
+        print('Dir already exists')
+        img_dir = img_dir 
+
+    
+    doc = fitz.open(pdf_dir)  
+    for page in doc:  
+        pix = page.get_pixmap(matrix= fitz.Matrix(2.0, 2.0)) 
+        pix.save(f"{img_dir}page-%i.png" % page.number)
+
+convert_to_png(fname)

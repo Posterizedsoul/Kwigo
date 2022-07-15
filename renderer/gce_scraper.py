@@ -67,4 +67,3 @@ def download_paper(subject_code:int, Year:int, PaperVariant: int or None = None,
     except PaperNotFound:
         return PaperNotFound
 download_paper(9706, 2020, 12, 's', 'ms')
-

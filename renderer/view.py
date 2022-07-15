@@ -18,22 +18,16 @@ with dpg.texture_registry():
     dpg.add_static_texture(width, height, data, tag="image_id")
 
 
-      
-
-
 '''
 About Page
 '''
-with dpg.window(label="About", width=300, height=250,pos=[WIDTH // 2 -300//2, HEIGHT // 2- 250//2],modal=True, show=False, id="about_id", no_title_bar=True):
-    dpg.add_text("PyMangaDex",pos=[100,0],color=(200, 142, 255))
-    dpg.add_spacer(height=6)
+with dpg.window(label="About", width=300, height=120,pos=[WIDTH // 2 -300//2, HEIGHT // 2- 250//2],modal=True, show=False, id="about_id", no_title_bar=True):
+    dpg.add_text("Past Paper Viewer",pos=[70,0],color=(200, 142, 255))
+    dpg.add_spacer(height=8)
     dpg.add_text("Made with love by Beebek", pos=[35,20])
-    dpg.add_spacer(height=10)
+    dpg.add_spacer(height=20)
     dpg.add_text('Version: 0.0.1') 
-    dpg.add_spacer(height=2)
-    with dpg.drawlist(width=-1, height=-1):
-        dpg.draw_image("image_id", (20, 40), (80, 120), uv_min=(0, 0), uv_max=(1, 1))
-      
+    dpg.add_spacer(height = 10)
     with dpg.group(horizontal=True):
         dpg.add_button(label="OK", width=75, callback=lambda: dpg.configure_item("about_id", show=False))
         dpg.add_button(label="Cancel", width=75, callback=lambda: dpg.configure_item("about_id", show=False))
@@ -47,8 +41,8 @@ with dpg.window(tag='main window',no_resize=True,no_move=True,no_background=True
   '''
   with dpg.menu_bar():
     with dpg.menu(label="File"):
-      dpg.add_menu_item(label="Import Manga")
-
+      dpg.add_menu_item(label="Change default download location")
+    
     with dpg.menu(label='Tools'):
       dpg.add_menu_item(label='Settings')
       dpg.add_menu_item(label='Help')
@@ -62,18 +56,20 @@ with dpg.window(tag='main window',no_resize=True,no_move=True,no_background=True
   Search Box
   '''
   with dpg.group(label='Search_Box',horizontal=True):
-    
-    with dpg.child_window(width=220, height=40,no_scrollbar=True,border=False,tag="sidebar"):
-      with dpg.group(horizontal=False,tag="query"):
-        dpg.add_input_text(hint="Search for a Paper",width=-1, on_enter=True)
-    
     with dpg.child_window(tag='main_child_window',autosize_x=False,autosize_y=True,border=False):
+      # with dpg.add_child_window(tag='search_box',autosize_x=False,autosize_y=True,border=False):
+      #   dpg.add_text('Search',pos=[0,0])
       with dpg.child_window(autosize_x=False,autosize_y=True,delay_search=True):
-        pass
-        
+        # dpg.add_input_text(hint="Search for a Paper", width = -1,on_enter=True)
+        dpg.add_combo(['Subjects'])
+        dpg.add_combo(['Year'])
+        dpg.add_combo(['PaperVariant'])
+        dpg.add_combo(['s','w','m'])
+        dpg.add_combo(['sp','ms','qp','er','ir','gt'])
 
-dpg.create_viewport(title='Custom Title', width=800, height=600)
-  
+
+
+dpg.create_viewport(title='Custom Title', width=800, height=600)  
 with dpg.font_registry():
   mono_lisa =dpg.add_font('fonts\MonoLisa\MonoLisa-Bold.ttf', 20)
 
