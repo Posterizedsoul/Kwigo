@@ -84,6 +84,10 @@ dpg.create_viewport(title='PyMangaDex', width=WIDTH, height=HEIGHT)
 dpg.setup_dearpygui()
 dpg.maximize_viewport()
 dpg.set_primary_window('main window', True)
+'''
+Remove this line for linux. It's for windows only. Prolly will add some way to detect
+os. But I am too lazy.
+'''
 ctypes.windll.shcore.SetProcessDpiAwareness(2)
 dpg.show_viewport()
 dpg.start_dearpygui()
