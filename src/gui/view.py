@@ -12,12 +12,6 @@ cur_dir = os.getcwd()
 
 os.chdir(os.getcwd())
 
-width, height, channels, data = dpg.load_image('images/manga_neko.png')
-
-with dpg.texture_registry():
-    dpg.add_static_texture(width, height, data, tag="image_id")
-
-
 '''
 About Page
 '''
