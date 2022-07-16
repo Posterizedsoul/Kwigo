@@ -10,7 +10,7 @@ dpg.create_context()
 WIDTH, HEIGHT = 1920, 1080
 cur_dir = os.getcwd()
 
-os.chdir('D:/All the coding stuff/Mangadex')
+os.chdir(os.getcwd())
 
 width, height, channels, data = dpg.load_image('images/manga_neko.png')
 
