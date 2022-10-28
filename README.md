@@ -1,7 +1,7 @@
 # Kwigo
 
 Kwigo is a useful software built with the purpose of viewing and scraping A levels pastpapers . It is built with python and dearpygui framework.
-<hr>
+
 # Steps to setup the software
 
   - git clone https://github.com/Posterizedsoul/Kwigo
