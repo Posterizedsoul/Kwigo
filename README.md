@@ -12,3 +12,7 @@ Kwigo is a useful software built with the purpose of viewing and scraping A leve
   - pip install -r requirements.txt
   - python main.py
   
+> Note: last command may not work in linux systems . Use the following command instead
+
+  - python3 main.py
+  
